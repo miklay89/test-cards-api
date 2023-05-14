@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 import { RequestHandler } from "express";
 import Boom from "@hapi/boom";
 import CardsRepository from "../repositories/cards";
@@ -30,6 +31,8 @@ export default class CardsController {
   ) => {
     try {
       const { id } = req.params;
+      if (isNaN(+id)) throw Boom.badRequest("id in url should be a number");
+
       const card = await CardsRepository.getCardById(Number(id));
       if (!card) throw Boom.notFound();
 
@@ -68,6 +71,9 @@ export default class CardsController {
   ) => {
     try {
       const idParam = req.params.id;
+      if (isNaN(+idParam))
+        throw Boom.badRequest("id in url should be a number");
+
       const { id, name, ownerID, type } = req.body;
 
       const newCard = new Card(
